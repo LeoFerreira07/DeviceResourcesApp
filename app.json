@@ -8,7 +8,11 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.leoferreira.deviceresourcesapp"
+      "bundleIdentifier": "com.leoferreira.deviceresourcesapp",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Este aplicativo precisa acessar sua galeria de fotos.",
+        "NSContactsUsageDescription": "Este aplicativo precisa acessar seus contatos."
+      }
     },
     "android": {
       "package": "com.leoferreira.deviceresourcesapp",
