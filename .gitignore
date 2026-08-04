@@ -39,3 +39,10 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# editores / IDE
+.vscode/
+.idea/
+
+# material de apoio da disciplina
+*.pdf
