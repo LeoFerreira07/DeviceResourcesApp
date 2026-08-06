@@ -12,7 +12,14 @@ const ImagePickerComponent = () => {
 
   // Função para solicitar permissão e abrir a galeria
   const selectImage = async () => {
-    Alert.alert('Em construção', 'A seleção de imagem ainda será implementada.');
+    // Solicita permissão para acessar a galeria
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    // Verifica se a permissão foi concedida
+    if (status !== 'granted') {
+      Alert.alert('Permissão Negada', 'Permissão para acessar a galeria foi negada.');
+      return;
+    }
   };
 
   return (
