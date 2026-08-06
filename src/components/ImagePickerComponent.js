@@ -20,6 +20,16 @@ const ImagePickerComponent = () => {
       Alert.alert('Permissão Negada', 'Permissão para acessar a galeria foi negada.');
       return;
     }
+
+    // Abre a galeria para seleção de imagem
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'], // Apenas imagens
+      allowsEditing: true, // Permite edição básica
+      quality: 1, // Qualidade da imagem (1 é a melhor)
+    });
+
+    // Define a URI da imagem selecionada no estado
+    setImageUri(result.assets[0].uri);
   };
 
   return (
