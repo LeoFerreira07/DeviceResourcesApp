@@ -4,6 +4,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import ImagePickerComponent from './src/components/ImagePickerComponent';
 
 // Define o componente principal do aplicativo
 const App = () => {
@@ -17,6 +18,9 @@ const App = () => {
         <Text style={styles.title}>Recursos Nativos do Dispositivo</Text>
         <Text style={styles.subtitle}>Galeria de imagens e lista de contatos</Text>
       </View>
+
+      {/* Renderiza o componente de seleção de imagem */}
+      <ImagePickerComponent />
     </SafeAreaView>
   );
 };
