@@ -2,7 +2,7 @@
 
 // Importa as bibliotecas necessárias
 import React, { useState } from 'react';
-import { View, Button, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, Alert, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 // Define o componente funcional
@@ -41,15 +41,21 @@ const ImagePickerComponent = () => {
   return (
     // Contêiner principal com estilo centralizado
     <View style={styles.container}>
+      {/* Título da seção */}
+      <Text style={styles.sectionTitle}>Galeria de Imagens</Text>
+
       {/* Botão para selecionar imagem */}
       <Button title="Selecionar Imagem" onPress={selectImage} />
 
       {/* Exibe a imagem selecionada, se houver */}
-      {imageUri && (
+      {imageUri ? (
         <Image
           source={{ uri: imageUri }} // Fonte da imagem
           style={styles.image} // Estilo da imagem
         />
+      ) : (
+        // Mensagem exibida enquanto nenhuma imagem foi escolhida
+        <Text style={styles.placeholder}>Nenhuma imagem selecionada.</Text>
       )}
     </View>
   );
@@ -62,6 +68,19 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Centraliza horizontalmente
     padding: 20, // Espaçamento interno
     backgroundColor: '#fff', // Cor de fundo branca
+    margin: 16, // Espaçamento externo do cartão
+    borderRadius: 12, // Bordas arredondadas do cartão
+  },
+  sectionTitle: {
+    fontSize: 18, // Tamanho da fonte
+    fontWeight: 'bold', // Peso da fonte
+    marginBottom: 12, // Espaçamento abaixo do título
+    color: '#222', // Cor do texto
+  },
+  placeholder: {
+    marginTop: 20, // Espaçamento acima do texto
+    fontSize: 14, // Tamanho da fonte
+    color: '#777', // Cor do texto
   },
   image: {
     width: 200, // Largura da imagem
