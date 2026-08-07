@@ -38,6 +38,11 @@ const ImagePickerComponent = () => {
     setImageUri(result.assets[0].uri);
   };
 
+  // Função para limpar a imagem exibida na tela
+  const clearImage = () => {
+    setImageUri(null);
+  };
+
   return (
     // Contêiner principal com estilo centralizado
     <View style={styles.container}>
@@ -49,10 +54,17 @@ const ImagePickerComponent = () => {
 
       {/* Exibe a imagem selecionada, se houver */}
       {imageUri ? (
-        <Image
-          source={{ uri: imageUri }} // Fonte da imagem
-          style={styles.image} // Estilo da imagem
-        />
+        <View style={styles.preview}>
+          <Image
+            source={{ uri: imageUri }} // Fonte da imagem
+            style={styles.image} // Estilo da imagem
+          />
+
+          {/* Botão para remover a imagem exibida */}
+          <View style={styles.clearButton}>
+            <Button title="Remover Imagem" color="#b00020" onPress={clearImage} />
+          </View>
+        </View>
       ) : (
         // Mensagem exibida enquanto nenhuma imagem foi escolhida
         <Text style={styles.placeholder}>Nenhuma imagem selecionada.</Text>
@@ -76,6 +88,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Peso da fonte
     marginBottom: 12, // Espaçamento abaixo do título
     color: '#222', // Cor do texto
+  },
+  preview: {
+    alignItems: 'center', // Centraliza a imagem e o botão
+  },
+  clearButton: {
+    marginTop: 12, // Espaçamento acima do botão
   },
   placeholder: {
     marginTop: 20, // Espaçamento acima do texto
