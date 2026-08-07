@@ -2,7 +2,7 @@
 
 // Importa as bibliotecas necessárias
 import React, { useState } from 'react';
-import { View, Text, Button, Image, Alert, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, Alert, Linking, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 // Define o componente funcional
@@ -13,10 +13,23 @@ const ImagePickerComponent = () => {
   // Função para solicitar permissão e abrir a galeria
   const selectImage = async () => {
     // Solicita permissão para acessar a galeria
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const { status, canAskAgain } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     // Verifica se a permissão foi concedida
     if (status !== 'granted') {
+      // Quando o usuário bloqueia a permissão, só é possível liberar nas configurações
+      if (!canAskAgain) {
+        Alert.alert(
+          'Permissão Negada',
+          'A permissão da galeria foi bloqueada. Habilite o acesso nas configurações do dispositivo.',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Abrir Configurações', onPress: () => Linking.openSettings() },
+          ]
+        );
+        return;
+      }
+
       Alert.alert('Permissão Negada', 'Permissão para acessar a galeria foi negada.');
       return;
     }
