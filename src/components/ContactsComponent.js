@@ -12,7 +12,32 @@ const ContactsComponent = () => {
 
   // Função para solicitar permissão e carregar contatos
   const loadContacts = async () => {
-    Alert.alert('Em construção', 'A leitura dos contatos ainda será implementada.');
+    // Solicita permissão para acessar contatos
+    const { status } = await Contacts.requestPermissionsAsync();
+
+    // Verifica se a permissão foi concedida
+    if (status !== 'granted') {
+      Alert.alert('Permissão Negada', 'Permissão para acessar contatos foi negada.');
+      return;
+    }
+
+    try {
+      // Obtém todos os contatos do dispositivo
+      const { data } = await Contacts.getContactsAsync({
+        fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
+      });
+
+      // Verifica se há contatos
+      if (data.length > 0) {
+        setContacts(data); // Atualiza o estado com os contatos obtidos
+      } else {
+        Alert.alert('Sem Contatos', 'Nenhum contato encontrado.');
+      }
+    } catch (error) {
+      // Trata possíveis erros na obtenção dos contatos
+      Alert.alert('Erro', 'Ocorreu um erro ao carregar os contatos.');
+      console.error(error);
+    }
   };
 
   // Executa a função de carregar contatos quando o componente é montado
