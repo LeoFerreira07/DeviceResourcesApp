@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, Alert, StyleSheet } from 'react-native';
 import * as Contacts from 'expo-contacts/legacy';
+import { FontAwesome } from '@expo/vector-icons';
 
 // Define o componente funcional
 const ContactsComponent = () => {
@@ -56,17 +57,19 @@ const ContactsComponent = () => {
       {/* Lista de números de telefone do contato */}
       {item.phoneNumbers &&
         item.phoneNumbers.map((phone, index) => (
-          <Text key={index} style={styles.contactDetail}>
-            📞 {phone.number}
-          </Text>
+          <View key={index} style={styles.contactDetailContainer}>
+            <FontAwesome name="phone" size={16} color="#555" style={styles.icon} />
+            <Text style={styles.contactDetail}>{phone.number}</Text>
+          </View>
         ))}
 
       {/* Lista de emails do contato */}
       {item.emails &&
         item.emails.map((email, index) => (
-          <Text key={index} style={styles.contactDetail}>
-            📧 {email.email}
-          </Text>
+          <View key={index} style={styles.contactDetailContainer}>
+            <FontAwesome name="envelope" size={16} color="#555" style={styles.icon} />
+            <Text style={styles.contactDetail}>{email.email}</Text>
+          </View>
         ))}
     </View>
   );
@@ -107,10 +110,17 @@ const styles = StyleSheet.create({
     fontSize: 18, // Tamanho da fonte
     fontWeight: 'bold', // Peso da fonte
   },
+  contactDetailContainer: {
+    flexDirection: 'row', // Alinha ícone e texto na horizontal
+    alignItems: 'center', // Alinha verticalmente ao centro
+    marginTop: 5, // Espaçamento acima
+  },
+  icon: {
+    marginRight: 10, // Espaçamento entre o ícone e o texto
+  },
   contactDetail: {
     fontSize: 14, // Tamanho da fonte
     color: '#555', // Cor do texto
-    marginTop: 5, // Espaçamento acima do texto
   },
 });
 
