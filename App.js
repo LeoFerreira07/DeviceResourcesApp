@@ -2,9 +2,10 @@
 
 // Importa as bibliotecas necessárias
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import ImagePickerComponent from './src/components/ImagePickerComponent';
+import ContactsComponent from './src/components/ContactsComponent';
 
 // Define o componente principal do aplicativo
 const App = () => {
@@ -19,8 +20,14 @@ const App = () => {
         <Text style={styles.subtitle}>Galeria de imagens e lista de contatos</Text>
       </View>
 
-      {/* Renderiza o componente de seleção de imagem */}
-      <ImagePickerComponent />
+      {/* ScrollView para permitir rolagem caso o conteúdo exceda a tela */}
+      <ScrollView>
+        {/* Renderiza o componente de seleção de imagem */}
+        <ImagePickerComponent />
+
+        {/* Renderiza o componente de contatos */}
+        <ContactsComponent />
+      </ScrollView>
     </SafeAreaView>
   );
 };
