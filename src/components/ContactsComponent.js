@@ -52,6 +52,22 @@ const ContactsComponent = () => {
       <Text style={styles.contactName}>
         {item.firstName} {item.lastName}
       </Text>
+
+      {/* Lista de números de telefone do contato */}
+      {item.phoneNumbers &&
+        item.phoneNumbers.map((phone, index) => (
+          <Text key={index} style={styles.contactDetail}>
+            📞 {phone.number}
+          </Text>
+        ))}
+
+      {/* Lista de emails do contato */}
+      {item.emails &&
+        item.emails.map((email, index) => (
+          <Text key={index} style={styles.contactDetail}>
+            📧 {email.email}
+          </Text>
+        ))}
     </View>
   );
 
@@ -90,6 +106,11 @@ const styles = StyleSheet.create({
   contactName: {
     fontSize: 18, // Tamanho da fonte
     fontWeight: 'bold', // Peso da fonte
+  },
+  contactDetail: {
+    fontSize: 14, // Tamanho da fonte
+    color: '#555', // Cor do texto
+    marginTop: 5, // Espaçamento acima do texto
   },
 });
 
