@@ -2,7 +2,7 @@
 
 // Importa as bibliotecas necessárias
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Button, Alert, Linking, StyleSheet } from 'react-native';
 import * as Contacts from 'expo-contacts/legacy';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -10,17 +10,39 @@ import { FontAwesome } from '@expo/vector-icons';
 const ContactsComponent = () => {
   // Estado para armazenar os contatos
   const [contacts, setContacts] = useState([]);
+  // Estado para saber se a permissão de contatos foi recusada
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   // Função para solicitar permissão e carregar contatos
   const loadContacts = async () => {
     // Solicita permissão para acessar contatos
-    const { status } = await Contacts.requestPermissionsAsync();
+    const { status, canAskAgain } = await Contacts.requestPermissionsAsync();
 
     // Verifica se a permissão foi concedida
     if (status !== 'granted') {
+      // Mantém o aviso na tela para que o usuário possa tentar novamente
+      setPermissionDenied(true);
+      setContacts([]);
+
+      // Quando o usuário bloqueia a permissão, só é possível liberar nas configurações
+      if (!canAskAgain) {
+        Alert.alert(
+          'Permissão Negada',
+          'A permissão de contatos foi bloqueada. Habilite o acesso nas configurações do dispositivo.',
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { text: 'Abrir Configurações', onPress: () => Linking.openSettings() },
+          ]
+        );
+        return;
+      }
+
       Alert.alert('Permissão Negada', 'Permissão para acessar contatos foi negada.');
       return;
     }
+
+    // Permissão concedida: limpa o aviso de recusa
+    setPermissionDenied(false);
 
     try {
       // Obtém todos os contatos do dispositivo
@@ -80,6 +102,17 @@ const ContactsComponent = () => {
       {/* Botão para recarregar os contatos manualmente */}
       <Button title="Recarregar Contatos" onPress={loadContacts} />
 
+      {/* Aviso exibido quando o usuário recusa a permissão de contatos */}
+      {permissionDenied && (
+        <View style={styles.warning}>
+          <FontAwesome name="exclamation-triangle" size={16} color="#8a6d3b" style={styles.icon} />
+          <Text style={styles.warningText}>
+            Sem permissão de acesso aos contatos. Toque em "Recarregar Contatos" para tentar
+            novamente.
+          </Text>
+        </View>
+      )}
+
       {/* Lista de contatos exibida usando FlatList */}
       <FlatList
         data={contacts} // Dados da lista
@@ -100,6 +133,19 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 20, // Espaçamento acima da lista
+  },
+  warning: {
+    flexDirection: 'row', // Alinha ícone e texto na horizontal
+    alignItems: 'center', // Alinha verticalmente ao centro
+    backgroundColor: '#fcf8e3', // Fundo de destaque para o aviso
+    borderRadius: 8, // Bordas arredondadas
+    padding: 12, // Espaçamento interno
+    marginTop: 16, // Espaçamento acima do aviso
+  },
+  warningText: {
+    flex: 1, // Ocupa o espaço restante da linha
+    fontSize: 13, // Tamanho da fonte
+    color: '#8a6d3b', // Cor do texto
   },
   contactItem: {
     padding: 15, // Espaçamento interno
