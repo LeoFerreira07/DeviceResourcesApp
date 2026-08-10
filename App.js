@@ -2,7 +2,7 @@
 
 // Importa as bibliotecas necessárias
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import ImagePickerComponent from './src/components/ImagePickerComponent';
 import ContactsComponent from './src/components/ContactsComponent';
@@ -20,14 +20,17 @@ const App = () => {
         <Text style={styles.subtitle}>Galeria de imagens e lista de contatos</Text>
       </View>
 
-      {/* ScrollView para permitir rolagem caso o conteúdo exceda a tela */}
-      <ScrollView>
-        {/* Renderiza o componente de seleção de imagem */}
-        <ImagePickerComponent />
+      {/* Renderiza o componente de seleção de imagem */}
+      <ImagePickerComponent />
 
-        {/* Renderiza o componente de contatos */}
+      {/*
+        O componente de contatos usa FlatList, que já possui rolagem própria.
+        Por isso ele ocupa o espaço restante da tela em vez de ficar dentro
+        de uma ScrollView (evita o aviso de VirtualizedList aninhada).
+      */}
+      <View style={styles.contactsArea}>
         <ContactsComponent />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -41,6 +44,13 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20, // Espaçamento interno na horizontal
     paddingVertical: 16, // Espaçamento interno na vertical
+  },
+  contactsArea: {
+    flex: 1, // Ocupa o espaço restante da tela
+    margin: 16, // Espaçamento externo do cartão
+    marginTop: 0, // Mantém a proximidade com o cartão anterior
+    borderRadius: 12, // Bordas arredondadas do cartão
+    overflow: 'hidden', // Respeita o arredondamento das bordas
   },
   title: {
     fontSize: 20, // Tamanho da fonte
