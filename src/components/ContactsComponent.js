@@ -2,7 +2,16 @@
 
 // Importa as bibliotecas necessárias
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, Alert, Linking, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  Alert,
+  Linking,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import * as Contacts from 'expo-contacts/legacy';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -12,6 +21,8 @@ const ContactsComponent = () => {
   const [contacts, setContacts] = useState([]);
   // Estado para saber se a permissão de contatos foi recusada
   const [permissionDenied, setPermissionDenied] = useState(false);
+  // Estado para indicar que os contatos estão sendo carregados
+  const [loading, setLoading] = useState(false);
 
   // Função para solicitar permissão e carregar contatos
   const loadContacts = async () => {
@@ -45,6 +56,9 @@ const ContactsComponent = () => {
     setPermissionDenied(false);
 
     try {
+      // Sinaliza o início do carregamento
+      setLoading(true);
+
       // Obtém todos os contatos do dispositivo
       const { data } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.Emails, Contacts.Fields.PhoneNumbers],
@@ -54,12 +68,16 @@ const ContactsComponent = () => {
       if (data.length > 0) {
         setContacts(data); // Atualiza o estado com os contatos obtidos
       } else {
+        setContacts([]);
         Alert.alert('Sem Contatos', 'Nenhum contato encontrado.');
       }
     } catch (error) {
       // Trata possíveis erros na obtenção dos contatos
       Alert.alert('Erro', 'Ocorreu um erro ao carregar os contatos.');
       console.error(error);
+    } finally {
+      // Encerra o indicador de carregamento em qualquer cenário
+      setLoading(false);
     }
   };
 
@@ -99,6 +117,12 @@ const ContactsComponent = () => {
   return (
     // Contêiner principal com estilo de preenchimento
     <View style={styles.container}>
+      {/* Título da seção e quantidade de contatos carregados */}
+      <Text style={styles.sectionTitle}>Contatos do Dispositivo</Text>
+      <Text style={styles.counter}>
+        {contacts.length} contato(s) carregado(s)
+      </Text>
+
       {/* Botão para recarregar os contatos manualmente */}
       <Button title="Recarregar Contatos" onPress={loadContacts} />
 
@@ -113,13 +137,24 @@ const ContactsComponent = () => {
         </View>
       )}
 
-      {/* Lista de contatos exibida usando FlatList */}
-      <FlatList
-        data={contacts} // Dados da lista
-        keyExtractor={(item) => item.id} // Chave única para cada item
-        renderItem={renderItem} // Função para renderizar cada item
-        contentContainerStyle={styles.list} // Estilo do conteúdo da lista
-      />
+      {/* Indicador exibido enquanto os contatos são carregados */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#555" style={styles.loading} />
+      ) : (
+        // Lista de contatos exibida usando FlatList
+        <FlatList
+          data={contacts} // Dados da lista
+          keyExtractor={(item) => item.id} // Chave única para cada item
+          renderItem={renderItem} // Função para renderizar cada item
+          contentContainerStyle={styles.list} // Estilo do conteúdo da lista
+          ListEmptyComponent={
+            // Mensagem exibida quando não há contatos para mostrar
+            !permissionDenied ? (
+              <Text style={styles.placeholder}>Nenhum contato para exibir.</Text>
+            ) : null
+          }
+        />
+      )}
     </View>
   );
 };
@@ -130,6 +165,25 @@ const styles = StyleSheet.create({
     flex: 1, // Ocupa todo o espaço disponível
     padding: 20, // Espaçamento interno
     backgroundColor: '#fff', // Cor de fundo branca
+  },
+  sectionTitle: {
+    fontSize: 18, // Tamanho da fonte
+    fontWeight: 'bold', // Peso da fonte
+    color: '#222', // Cor do texto
+  },
+  counter: {
+    fontSize: 13, // Tamanho da fonte
+    color: '#777', // Cor do texto
+    marginBottom: 12, // Espaçamento abaixo do contador
+  },
+  loading: {
+    marginTop: 24, // Espaçamento acima do indicador
+  },
+  placeholder: {
+    marginTop: 20, // Espaçamento acima do texto
+    fontSize: 14, // Tamanho da fonte
+    color: '#777', // Cor do texto
+    textAlign: 'center', // Centraliza o texto
   },
   list: {
     marginTop: 20, // Espaçamento acima da lista
