@@ -31,6 +31,20 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Este aplicativo precisa acessar sua galeria de fotos."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Este aplicativo precisa acessar seus contatos."
+        }
+      ]
+    ]
   }
 }
