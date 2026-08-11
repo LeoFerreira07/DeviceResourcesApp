@@ -1,7 +1,7 @@
 // src/components/ContactsComponent.js
 
 // Importa as bibliotecas necessárias
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -86,8 +86,11 @@ const ContactsComponent = () => {
     loadContacts();
   }, []);
 
+  // Gera uma chave única para cada item (nem todo contato possui id no Android)
+  const keyExtractor = useCallback((item, index) => item.id ?? String(index), []);
+
   // Função para renderizar cada item da lista de contatos
-  const renderItem = ({ item }) => (
+  const renderItem = useCallback(({ item }) => (
     <View style={styles.contactItem}>
       {/* Nome completo do contato */}
       <Text style={styles.contactName}>
@@ -112,7 +115,7 @@ const ContactsComponent = () => {
           </View>
         ))}
     </View>
-  );
+  ), []);
 
   return (
     // Contêiner principal com estilo de preenchimento
@@ -144,9 +147,13 @@ const ContactsComponent = () => {
         // Lista de contatos exibida usando FlatList
         <FlatList
           data={contacts} // Dados da lista
-          keyExtractor={(item) => item.id} // Chave única para cada item
+          keyExtractor={keyExtractor} // Chave única para cada item
           renderItem={renderItem} // Função para renderizar cada item
           contentContainerStyle={styles.list} // Estilo do conteúdo da lista
+          initialNumToRender={15} // Renderiza apenas os primeiros itens visíveis
+          maxToRenderPerBatch={20} // Limita a quantidade de itens por lote
+          windowSize={10} // Reduz a janela de renderização em memória
+          removeClippedSubviews // Libera itens fora da tela (renderização preguiçosa)
           ListEmptyComponent={
             // Mensagem exibida quando não há contatos para mostrar
             !permissionDenied ? (
