@@ -10,6 +10,7 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
+  Platform,
   StyleSheet,
 } from 'react-native';
 import * as Contacts from 'expo-contacts/legacy';
@@ -26,6 +27,15 @@ const ContactsComponent = () => {
 
   // Função para solicitar permissão e carregar contatos
   const loadContacts = async () => {
+    // A agenda de contatos é um recurso nativo e não existe no navegador
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        'Recurso Indisponível',
+        'A lista de contatos só pode ser acessada em um dispositivo Android ou iOS.'
+      );
+      return;
+    }
+
     // Solicita permissão para acessar contatos
     const { status, canAskAgain } = await Contacts.requestPermissionsAsync();
 
