@@ -34,21 +34,27 @@ const ImagePickerComponent = () => {
       return;
     }
 
-    // Abre a galeria para seleção de imagem
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'], // Apenas imagens
-      allowsEditing: true, // Permite edição básica
-      quality: 1, // Qualidade da imagem (1 é a melhor)
-    });
+    try {
+      // Abre a galeria para seleção de imagem
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'], // Apenas imagens
+        allowsEditing: true, // Permite edição básica
+        quality: 1, // Qualidade da imagem (1 é a melhor)
+      });
 
-    // Verifica se o usuário cancelou a operação
-    if (result.canceled) {
-      Alert.alert('Operação Cancelada', 'Você cancelou a seleção de imagem.');
-      return;
+      // Verifica se o usuário cancelou a operação
+      if (result.canceled) {
+        Alert.alert('Operação Cancelada', 'Você cancelou a seleção de imagem.');
+        return;
+      }
+
+      // Define a URI da imagem selecionada no estado
+      setImageUri(result.assets[0].uri);
+    } catch (error) {
+      // Trata possíveis falhas ao abrir a galeria ou ler a imagem
+      Alert.alert('Erro', 'Não foi possível carregar a imagem selecionada.');
+      console.error(error);
     }
-
-    // Define a URI da imagem selecionada no estado
-    setImageUri(result.assets[0].uri);
   };
 
   // Função para limpar a imagem exibida na tela

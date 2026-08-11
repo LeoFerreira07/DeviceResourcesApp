@@ -26,7 +26,7 @@ const ContactsComponent = () => {
   const [loading, setLoading] = useState(false);
 
   // Função para solicitar permissão e carregar contatos
-  const loadContacts = async () => {
+  const loadContacts = useCallback(async () => {
     // A agenda de contatos é um recurso nativo e não existe no navegador
     if (Platform.OS === 'web') {
       Alert.alert(
@@ -89,12 +89,12 @@ const ContactsComponent = () => {
       // Encerra o indicador de carregamento em qualquer cenário
       setLoading(false);
     }
-  };
+  }, []);
 
   // Executa a função de carregar contatos quando o componente é montado
   useEffect(() => {
     loadContacts();
-  }, []);
+  }, [loadContacts]);
 
   // Gera uma chave única para cada item (nem todo contato possui id no Android)
   const keyExtractor = useCallback((item, index) => item.id ?? String(index), []);
